@@ -37,7 +37,18 @@
         <activity android:name=".ui.reminder.AddReminderActivity"/>
         <activity android:name=".ui.reminder.AddReminder"/>
 
-        <receiver android:name=".ui.alarm.Alarm"/>
+        <receiver android:name=".ui.alarm.Alarm"
+                android:enabled="true"
+                android:exported="true"/>
+
+        <provider
+            android:authorities="com.example.medhelp"
+            android:name=".ui.reminder.AlarmReminderProvider"
+            android:exported="false"/>
+
+        <service android:name=".ui.reminder.ReminderAlarmService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

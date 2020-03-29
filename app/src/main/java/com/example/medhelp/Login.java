@@ -53,7 +53,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailid.getText().toString();
                 String pass = password.getText().toString();
-                startActivity(new Intent(Login.this, MainActivity.class));
                 if (email.isEmpty()) {
                     emailid.setError("Please Enter The Email");
                     emailid.requestFocus();

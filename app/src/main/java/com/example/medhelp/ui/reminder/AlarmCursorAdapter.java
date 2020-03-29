@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.medhelp.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -24,11 +26,11 @@ public class AlarmCursorAdapter extends CursorAdapter {
 
     private TextView mTitleText, mDateAndTimeText, mRepeatInfoText;
     private ImageView mActiveImage , mThumbnailImage;
-   // private ColorGenerator mColorGenerator = ColorGenerator.DEFAULT;
-   // private TextDrawable mDrawableBuilder;
+    private ColorGenerator mColorGenerator = ColorGenerator.DEFAULT;
+    private TextDrawable mDrawableBuilder;
 
     public AlarmCursorAdapter(Context context, Cursor c) {
-        super(context, c, 0/* flags */);
+        super(context, c, 0 /* flags */);
     }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -37,14 +39,14 @@ public class AlarmCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        DatabaseReference mDataBaseRef= FirebaseDatabase.getInstance().getReference("Reminder");;
+
         mTitleText = (TextView) view.findViewById(R.id.recycle_title);
         mDateAndTimeText = (TextView) view.findViewById(R.id.recycle_date_time);
         mRepeatInfoText = (TextView) view.findViewById(R.id.recycle_repeat_info);
         mActiveImage = (ImageView) view.findViewById(R.id.active_image);
         mThumbnailImage = (ImageView) view.findViewById(R.id.thumbnail_image);
 
-       /* int titleColumnIndex = cursor.getColumnIndex(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE);
+        int titleColumnIndex = cursor.getColumnIndex(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE);
         int dateColumnIndex = cursor.getColumnIndex(AlarmReminderContract.AlarmReminderEntry.KEY_DATE);
         int timeColumnIndex = cursor.getColumnIndex(AlarmReminderContract.AlarmReminderEntry.KEY_TIME);
         int repeatColumnIndex = cursor.getColumnIndex(AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT);
@@ -59,54 +61,19 @@ public class AlarmCursorAdapter extends CursorAdapter {
         String repeatNo = cursor.getString(repeatNoColumnIndex);
         String repeatType = cursor.getString(repeatTypeColumnIndex);
         String active = cursor.getString(activeColumnIndex);
-*/
-        mDataBaseRef.addValueEventListener(new ValueEventListener() {
-               @Override
-               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                   ReminderData getData = new ReminderData();
-                   if (dataSnapshot.hasChildren()) {
-                       for (DataSnapshot cSnapShot : dataSnapshot.getChildren()) {
-                           getData = cSnapShot.getValue(ReminderData.class);
-                       }
-                       String title = getData.getMed_name();
-                       String date = getData.getDate();
-                       String time = getData.getTime();
-                       String repeat = getData.getRepeat();
-                       String repeatNo = getData.getRepeat_no();
-                       String repeatType = getData.getRepeat_type();
-                       String active = getData.getActive();
-                       String dateTime = date + " " + time;
-                       mTitleText.setText(title);
-                       mDateAndTimeText.setText(dateTime);
-                       mRepeatInfoText.setText("Every" + repeatNo + " "+ repeatType+ "(s");
-                       setReminderTitle(title);
-                       setReminderDateTime(dateTime);
-                       setReminderRepeatInfo(repeat, repeatNo, repeatType);
-                       setActiveImage(active);
-                   }
+
+        String dateTime = date + " " + time;
+
+
+        setReminderTitle(title);
+        setReminderDateTime(dateTime);
+        setReminderRepeatInfo(repeat, repeatNo, repeatType);
+        setActiveImage(active);
 
 
 
 
-         /*       // Update the views on the screen with the values from the database
-                mTitleText.setText(title);
-                mDateText.setText(date);
-                mTimeText.setText(time);
-                mRepeatNoText.setText(repeatNo);
-                mRepeatTypeText.setText(repeatType);
-                mRepeatText.setText("Every " + repeatNo + " " + repeatType + "(s)");
-       */
-
-
-
-
-               }
-
-               @Override
-               public void onCancelled(@NonNull DatabaseError databaseError) {
-
-               }
-
+    }
 
     // Set reminder title view
     public void setReminderTitle(String title) {
@@ -117,12 +84,11 @@ public class AlarmCursorAdapter extends CursorAdapter {
             letter = title.substring(0, 1);
         }
 
-     //   int color = mColorGenerator.getRandomColor();
+        int color = mColorGenerator.getRandomColor();
 
         // Create a circular icon consisting of  a random background colour and first letter of title
-       /* mDrawableBuilder = TextDrawable.builder()
-                .buildRound(letter, color);
-        mThumbnailImage.setImageDrawable(mDrawableBuilder);*/
+        mDrawableBuilder = TextDrawable.builder().buildRound(letter, color);
+        mThumbnailImage.setImageDrawable(mDrawableBuilder);
     }
 
     // Set date and time views
@@ -147,5 +113,4 @@ public class AlarmCursorAdapter extends CursorAdapter {
             mActiveImage.setImageResource(R.drawable.ic_notifications_off_grey600_24dp);
         }
     }
-});}
-    }
+}

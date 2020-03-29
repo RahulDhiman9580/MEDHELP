@@ -52,18 +52,18 @@ public class ReminderAlarmService extends IntentService {
         }
 
         String description = "";
-        ReminderData getData = new ReminderData();
-        DataSnapshot dataSnapshot = null;
-        if(dataSnapshot.hasChildren())
-        {
-            for(DataSnapshot cSnapShot:dataSnapshot.getChildren())
-            {
-                getData = cSnapShot.getValue(ReminderData.class);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                description = AlarmReminderContract.getColumnString(cursor, AlarmReminderContract.AlarmReminderEntry.KEY_TITLE);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
-        description=getData.getMed_name();
+
         Notification note = new NotificationCompat.Builder(this)
-                .setContentTitle("reminder_title")
+                .setContentTitle(getString(R.string.reminder_title))
                 .setContentText(description)
                 .setSmallIcon(R.drawable.ic_add_alert_black_24dp)
                 .setContentIntent(operation)

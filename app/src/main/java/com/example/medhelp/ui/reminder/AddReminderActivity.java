@@ -1,4 +1,5 @@
 package com.example.medhelp.ui.reminder;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
@@ -196,10 +197,10 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
             mFAB2.setVisibility(View.VISIBLE);
         }
 
-    //    setSupportActionBar(mToolbar);
-      //  getSupportActionBar().setTitle("title_activity_add_reminder");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //etSupportActionBar().setHomeButtonEnabled(true);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Set Alarm");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
 
     }
@@ -243,7 +244,8 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
     }
 
     // Obtain time from time picker
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         mHour = hourOfDay;
         mMinute = minute;
         if (minute < 10) {
@@ -505,12 +507,23 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
     // On clicking the save button
     public void saveReminder(){
 
-     /*   if (mCurrentReminderUri == null ) {
-            // Since no fields were modified, we can return early without creating a new reminder.
-            // No need to create ContentValues and no need to do any ContentProvider operations.
-            return;
-        }
-*///putting values in data class
+//        if (mCurrentReminderUri == null ) {
+//            // Since no fields were modified, we can return early without creating a new reminder.
+//            // No need to create ContentValues and no need to do any ContentProvider operations.
+//            return;
+//        }
+
+        //putting values in data class
+        ContentValues values = new ContentValues();
+
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, mTitle);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_DATE, mDate);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TIME, mTime);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT, mRepeat);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT_NO, mRepeatNo);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT_TYPE, mRepeatType);
+        values.put(AlarmReminderContract.AlarmReminderEntry.KEY_ACTIVE, mActive);
+
 
 
         // Set up calender for creating the notification
@@ -536,43 +549,19 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
             mRepeatTime = Integer.parseInt(mRepeatNo) * milMonth;
         }
 
-        mDataBaseRef= FirebaseDatabase.getInstance().getReference().child("Reminder");
-        ReminderData data =new ReminderData();
-        data.setMed_name(mTitle);
-        data.setDate(mDate);
-        data.setActive(mActive);
-        data.setRepeat(mRepeat);
-        data.setRepeat_no(mRepeatNo);
-        data.setTime(mTime);
-        data.setRepeat_type(mRepeatType);
-        mDataBaseRef.push().setValue(data);
-        Toast.makeText(this, "Reminder Successfully Created", Toast.LENGTH_SHORT).show();
-    /*   if (mCurrentReminderUri == null) {
+        if (mCurrentReminderUri == null) {
             // This is a NEW reminder, so insert a new reminder into the provider,
             // returning the content URI for the new reminder.
-
-            DatabaseReference mDataBaseRef =new DatabaseReference();
-            mDataBaseRef= FirebaseDatabase.getInstance().getReference().child("Reminder");
-            ReminderData data =new ReminderData();
-            data.setMed_name(mTitle);
-            data.setDate(mDate);
-            data.setActive(mActive);
-            data.setRepeat(mRepeat);
-            data.setRepeat_no(mRepeatNo);
-            data.setTime(mTime);
-            data.setRepeat_type(mRepeatType);
-            mDataBaseRef.push().setValue(data);
-
             Uri newUri = getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
 
             // Show a toast message depending on whether or not the insertion was successful.
             if (newUri == null) {
                 // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, "editor_insert_reminder_failed",
+                Toast.makeText(this, getString(R.string.editor_insert_reminder_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, "editor_insert_reminder_successful",
+                Toast.makeText(this, getString(R.string.editor_insert_reminder_successful),
                         Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -582,15 +571,15 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
             // Show a toast message depending on whether or not the update was successful.
             if (rowsAffected == 0) {
                 // If no rows were affected, then there was an error with the update.
-                Toast.makeText(this, "editor_update_reminder_failed",
+                Toast.makeText(this, getString(R.string.editor_update_reminder_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, "editor_update_reminder_successful",
+                Toast.makeText(this, getString(R.string.editor_update_reminder_successful),
                         Toast.LENGTH_SHORT).show();
             }
         }
-*/
+
         // Create a new notification
         if (mActive.equals("true")) {
             if (mRepeat.equals("true")) {
@@ -613,83 +602,12 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        mDataBaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ReminderData getData = new ReminderData();
-                if(dataSnapshot.hasChildren())
-                {
-                    for(DataSnapshot cSnapShot:dataSnapshot.getChildren())
-                    {
-                        getData = cSnapShot.getValue(ReminderData.class);
-                    }
-                }
-                String title = getData.getMed_name();
-                String date = getData.getDate();
-                String time = getData.getTime();
-                String repeat = getData.getRepeat();
-                String repeatNo = getData.getRepeat_no();
-                String repeatType = getData.getRepeat_type();
-                String active = getData.getActive();
-
-
-
-                // Update the views on the screen with the values from the database
-                mTitleText.setText(title);
-                mDateText.setText(date);
-                mTimeText.setText(time);
-                mRepeatNoText.setText(repeatNo);
-                mRepeatTypeText.setText(repeatType);
-                mRepeatText.setText("Every " + repeatNo + " " + repeatType + "(s)");
-                // Setup up active buttons
-                // Setup repeat switch
-                if (repeat.equals("false")) {
-                    mRepeatSwitch.setChecked(false);
-                    mRepeatText.setText("repeat_off");
-
-                } else if (repeat.equals("true")) {
-                    mRepeatSwitch.setChecked(true);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-
-    }
-
-
-
-/*
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-     /*   String[] projection = {
+        String[] projection = {
                 AlarmReminderContract.AlarmReminderEntry._ID,
                 AlarmReminderContract.AlarmReminderEntry.KEY_TITLE,
                 AlarmReminderContract.AlarmReminderEntry.KEY_DATE,
@@ -698,17 +616,17 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
                 AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT_NO,
                 AlarmReminderContract.AlarmReminderEntry.KEY_REPEAT_TYPE,
                 AlarmReminderContract.AlarmReminderEntry.KEY_ACTIVE,
-        };*/
+        };
 
         // This loader will execute the ContentProvider's query method on a background thread
-        /*return new CursorLoader(this,   // Parent activity context
+        return new CursorLoader(this,   // Parent activity context
                 mCurrentReminderUri,         // Query the content URI for the current reminder
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
-                null); */                 // Default sort order
-    /*
-}
+                null);
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || cursor.getCount() < 1) {
@@ -748,7 +666,7 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
             // Setup repeat switch
             if (repeat.equals("false")) {
                 mRepeatSwitch.setChecked(false);
-                mRepeatText.setText("repeat_off");
+                mRepeatText.setText(R.string.repeat_off);
 
             } else if (repeat.equals("true")) {
                 mRepeatSwitch.setChecked(true);
@@ -756,12 +674,12 @@ public class AddReminderActivity extends AppCompatActivity implements TimePicker
 
         }
 
-
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
-    }
-*/
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) { }
+
 }

@@ -7,14 +7,14 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="16dp"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:background="?attr/colorPrimary" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -317,7 +317,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="selectFab1"
-        fab:fab_icon="@drawable/ic_notifications_off_grey600_24dp"
+        android:src="@drawable/ic_notifications_off_grey600_24dp"
         fab:fab_colorNormal="@color/colorAccent"
         fab:fab_colorPressed="@color/fab_pressed"
         app:fab_size="normal"
@@ -334,9 +334,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="selectFab2"
-        fab:fab_icon="@drawable/ic_notifications_on_white_24dp"
-        fab:fab_colorNormal="@color/colorAccent"
-        fab:fab_colorPressed="@color/fab_pressed"
+        android:src="@drawable/ic_notifications_black_24dp"
         app:fab_size="16dp"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="168dp"

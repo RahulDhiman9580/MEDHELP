@@ -3,9 +3,11 @@ package com.example.medhelp.ui.reminder;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
+import com.example.medhelp.ui.alarm.Alarm;
 
 
 public class AlarmScheduler {
@@ -20,8 +22,11 @@ public class AlarmScheduler {
     public void setAlarm(Context context, long alarmTime, Uri reminderTask) {
         AlarmManager manager = AlarmManagerProvider.getAlarmManager(context);
 
-        PendingIntent operation =
-                ReminderAlarmService.getReminderPendingIntent(context, reminderTask);
+        Intent intent = new Intent(context, Alarm.class);                                 // alternative
+        PendingIntent operation = PendingIntent.getBroadcast(context, 234, intent, 0);
+
+
+//        PendingIntent operation = ReminderAlarmService.getReminderPendingIntent(context, reminderTask);
 
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -42,8 +47,11 @@ public class AlarmScheduler {
     public void setRepeatAlarm(Context context, long alarmTime, Uri reminderTask, long RepeatTime) {
         AlarmManager manager = AlarmManagerProvider.getAlarmManager(context);
 
-        PendingIntent operation =
-                ReminderAlarmService.getReminderPendingIntent(context, reminderTask);
+        Intent intent = new Intent(context, Alarm.class);                                 // alternative
+        PendingIntent operation = PendingIntent.getBroadcast(context, 234, intent, 0);
+
+
+//        PendingIntent operation = ReminderAlarmService.getReminderPendingIntent(context, reminderTask);
 
         manager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, RepeatTime, operation);
 
